@@ -1,0 +1,22 @@
+# Web框架
+fastapi==0.121.1
+uvicorn[standard]==0.38.0
+pydantic==2.12.4
+
+# 数据处理
+pandas==2.3.3
+numpy==2.3.4
+
+# 机器学习
+scikit-learn==1.7.2
+scipy==1.16.3
+
+# 模型持久化
+joblib==1.5.2
+
+# 可视化
+matplotlib==3.10.7
+seaborn==0.13.2
+
+# 工具
+python-dotenv==1.2.1
