@@ -8,6 +8,11 @@ venv/
 env/
 *.egg-info/
 
+node_modules/
+build/
+dist/
+*.egg
+
 # 数据和模型（太大不提交）
 data/raw/
 data/processed/

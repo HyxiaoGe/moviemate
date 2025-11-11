@@ -1,4 +1,21 @@
-# 使用官方 Python 运行时作为基础镜像
+# 多阶段构建：第一阶段构建前端
+FROM node:18-alpine AS frontend-builder
+
+WORKDIR /frontend
+
+# 复制前端依赖文件
+COPY frontend/package*.json ./
+
+# 安装前端依赖
+RUN npm ci --only=production
+
+# 复制前端源码
+COPY frontend/ ./
+
+# 构建前端
+RUN npm run build
+
+# 第二阶段：构建后端并整合前端
 FROM python:3.11-slim
 
 # 设置工作目录
@@ -23,6 +40,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # 复制项目文件
 COPY . .
+
+# 从前端构建阶段复制构建产物
+COPY --from=frontend-builder /frontend/build /app/frontend/build
 
 # 创建必要的目录
 RUN mkdir -p data/models data/processed data/raw

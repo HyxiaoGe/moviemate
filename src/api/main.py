@@ -4,6 +4,8 @@ MovieMate FastAPI 应用
 """
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from typing import List, Optional
 import pandas as pd
@@ -73,6 +75,12 @@ async def load_model():
     movies_df = pd.read_csv(movies_path)
     
     print("✓ 模型和数据加载完成！")
+
+# 挂载前端静态文件（如果存在）
+frontend_build_path = "frontend/build"
+if os.path.exists(frontend_build_path):
+    app.mount("/static", StaticFiles(directory=f"{frontend_build_path}/static"), name="static")
+    print("✓ 前端静态文件已挂载")
 
 # API 路由
 @app.get("/")
@@ -232,3 +240,24 @@ async def get_stats():
         "model_components": model.n_components,
         "global_mean_rating": float(model.global_mean)
     }
+
+# 前端路由处理（必须放在最后）
+@app.get("/{full_path:path}")
+async def serve_frontend(full_path: str):
+    """服务前端应用"""
+    frontend_build_path = "frontend/build"
+    
+    if not os.path.exists(frontend_build_path):
+        raise HTTPException(status_code=404, detail="前端未构建")
+    
+    # 如果请求的是文件且存在，返回该文件
+    file_path = os.path.join(frontend_build_path, full_path)
+    if os.path.isfile(file_path):
+        return FileResponse(file_path)
+    
+    # 否则返回 index.html（用于 React Router）
+    index_path = os.path.join(frontend_build_path, "index.html")
+    if os.path.exists(index_path):
+        return FileResponse(index_path)
+    
+    raise HTTPException(status_code=404, detail="页面不存在")
