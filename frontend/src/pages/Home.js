@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { movieApi } from '../services/api';
 
@@ -7,38 +7,37 @@ function Home() {
   const [userId, setUserId] = useState(1);
 
   useEffect(() => {
-    // 加载统计信息
     movieApi.getStats().then(setStats).catch(console.error);
   }, []);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-12 animate-fadeIn">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg p-12 text-center">
-        <h1 className="text-5xl font-bold mb-4">
+      <div className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white rounded-2xl shadow-2xl p-8 md:p-16 text-center transform hover:scale-[1.01] transition-transform">
+        <h1 className="text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg">
           发现你的下一部最爱电影 🎬
         </h1>
-        <p className="text-xl mb-8">
+        <p className="text-lg md:text-2xl mb-10 text-white/90">
           基于机器学习的个性化电影推荐系统
         </p>
         
         {/* 快速开始 */}
-        <div className="bg-white text-gray-900 rounded-lg p-6 max-w-md mx-auto">
-          <label className="block text-lg font-semibold mb-2">
+        <div className="bg-white text-gray-900 rounded-xl p-6 md:p-8 max-w-md mx-auto shadow-xl">
+          <label className="block text-lg font-semibold mb-4 text-gray-700">
             输入你的用户 ID 开始推荐
           </label>
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <input
               type="number"
               value={userId}
               onChange={(e) => setUserId(e.target.value)}
-              className="flex-1 px-4 py-3 border rounded-lg"
-              placeholder="用户 ID"
+              className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all"
+              placeholder="1"
               min="1"
             />
             <Link
               to={`/recommendations?userId=${userId}`}
-              className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 font-semibold"
+              className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-3 rounded-lg hover:from-indigo-700 hover:to-purple-700 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all"
             >
               获取推荐
             </Link>
@@ -95,16 +94,16 @@ function Home() {
 // 统计卡片组件
 function StatCard({ icon, title, value, color }) {
   const colorClasses = {
-    blue: 'bg-blue-50 text-blue-600',
-    purple: 'bg-purple-50 text-purple-600',
-    yellow: 'bg-yellow-50 text-yellow-600',
+    blue: 'from-blue-500 to-blue-600 shadow-blue-200',
+    purple: 'from-purple-500 to-purple-600 shadow-purple-200',
+    yellow: 'from-yellow-500 to-yellow-600 shadow-yellow-200',
   };
 
   return (
-    <div className={`${colorClasses[color]} rounded-lg p-6 text-center`}>
-      <div className="text-4xl mb-2">{icon}</div>
-      <div className="text-3xl font-bold mb-1">{value.toLocaleString()}</div>
-      <div className="text-sm font-medium">{title}</div>
+    <div className={`bg-gradient-to-br ${colorClasses[color]} text-white rounded-xl p-8 text-center shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all`}>
+      <div className="text-5xl mb-3">{icon}</div>
+      <div className="text-4xl font-bold mb-2">{value.toLocaleString()}</div>
+      <div className="text-sm font-medium text-white/90">{title}</div>
     </div>
   );
 }
@@ -112,10 +111,10 @@ function StatCard({ icon, title, value, color }) {
 // 功能卡片组件
 function FeatureCard({ icon, title, description }) {
   return (
-    <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-xl transition-shadow">
-      <div className="text-4xl mb-3">{icon}</div>
-      <h3 className="text-xl font-bold mb-2">{title}</h3>
-      <p className="text-gray-600">{description}</p>
+    <div className="bg-white rounded-xl p-8 shadow-md hover:shadow-2xl transition-all transform hover:-translate-y-1 border border-gray-100">
+      <div className="text-5xl mb-4">{icon}</div>
+      <h3 className="text-xl font-bold mb-3 text-gray-800">{title}</h3>
+      <p className="text-gray-600 leading-relaxed">{description}</p>
     </div>
   );
 }
