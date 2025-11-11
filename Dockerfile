@@ -1,5 +1,5 @@
 # 多阶段构建：第一阶段构建前端
-FROM node:18-alpine AS frontend-builder
+FROM node:20-alpine AS frontend-builder
 
 WORKDIR /frontend
 
@@ -7,7 +7,7 @@ WORKDIR /frontend
 COPY frontend/package*.json ./
 
 # 安装前端依赖
-RUN npm ci --only=production
+RUN npm install
 
 # 复制前端源码
 COPY frontend/ ./

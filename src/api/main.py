@@ -83,9 +83,9 @@ if os.path.exists(frontend_build_path):
     print("✓ 前端静态文件已挂载")
 
 # API 路由
-@app.get("/")
+@app.get("/api")
 async def root():
-    """根路径"""
+    """API 根路径"""
     return {
         "message": "欢迎使用 MovieMate API",
         "docs": "/docs",
