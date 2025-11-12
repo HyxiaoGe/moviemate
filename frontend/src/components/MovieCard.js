@@ -83,38 +83,38 @@ function MovieCard({ movie, rank, showRank = true }) {
         </div>
 
         {/* 电影信息 */}
-        <div className="flex-1 p-4 flex flex-col">
-          {/* 标题 */}
-          <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white line-clamp-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+        <div className="flex-1 p-4 flex flex-col min-w-0">
+          {/* 标题 - 最多显示2行 */}
+          <h3 className="text-lg md:text-xl font-bold mb-2 text-gray-900 dark:text-white line-clamp-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
             {movie.title}
           </h3>
 
-          {/* 简介 */}
+          {/* 简介 - 最多显示2行，如果没有简介则不占空间 */}
           {tmdbData?.overview && (
-            <p className="text-sm text-gray-600 dark:text-gray-300 mb-3 line-clamp-3 flex-grow">
+            <p className="text-sm text-gray-600 dark:text-gray-300 mb-3 line-clamp-2">
               {tmdbData.overview}
             </p>
           )}
 
           {/* 标签信息 */}
           <div className="flex flex-wrap items-center gap-2 mb-3">
-            {/* 类型 */}
+            {/* 类型 - 只显示第一个类型 */}
             {movie.genres && (
-              <span className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-xs font-medium">
+              <span className="px-2 md:px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-xs font-medium truncate max-w-[120px]">
                 {movie.genres.split('|')[0]}
               </span>
             )}
 
             {/* 年份 */}
             {tmdbData?.releaseDate && (
-              <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full text-xs font-medium">
+              <span className="px-2 md:px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full text-xs font-medium">
                 {tmdbData.releaseDate.split('-')[0]}
               </span>
             )}
 
-            {/* 热度 */}
+            {/* 热度 - 在小屏幕上隐藏 */}
             {tmdbData?.popularity && (
-              <span className="px-3 py-1 bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300 rounded-full text-xs font-medium flex items-center gap-1">
+              <span className="hidden md:inline-flex px-2 md:px-3 py-1 bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300 rounded-full text-xs font-medium items-center gap-1">
                 <TrendingUp size={12} />
                 {Math.round(tmdbData.popularity)}
               </span>
@@ -122,13 +122,13 @@ function MovieCard({ movie, rank, showRank = true }) {
           </div>
 
           {/* 评分对比 */}
-          <div className="flex items-center gap-6 mb-4">
+          <div className="flex items-center gap-3 md:gap-6 mb-4 flex-wrap">
             {/* AI 预测评分 */}
             <div className="flex flex-col">
-              <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">AI 预测</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400 mb-1 whitespace-nowrap">AI 预测</div>
               <div className="flex items-center gap-1">
-                <Star size={20} className="text-indigo-500" fill="currentColor" />
-                <span className="text-lg font-bold text-indigo-600 dark:text-indigo-400">
+                <Star size={18} className="md:w-5 md:h-5 text-indigo-500" fill="currentColor" />
+                <span className="text-base md:text-lg font-bold text-indigo-600 dark:text-indigo-400">
                   {movie.predicted_rating?.toFixed(1) || 'N/A'}
                 </span>
               </div>
@@ -137,16 +137,16 @@ function MovieCard({ movie, rank, showRank = true }) {
             {/* TMDb 评分 */}
             {tmdbData?.voteAverage && (
               <>
-                <div className="h-10 w-px bg-gray-300 dark:bg-gray-600"></div>
+                <div className="h-8 md:h-10 w-px bg-gray-300 dark:bg-gray-600"></div>
                 <div className="flex flex-col">
-                  <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">TMDb 评分</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mb-1 whitespace-nowrap">TMDb 评分</div>
                   <div className="flex items-center gap-1">
-                    <Star size={20} className="text-yellow-500" fill="currentColor" />
-                    <span className="text-lg font-bold text-yellow-600 dark:text-yellow-400">
+                    <Star size={18} className="md:w-5 md:h-5 text-yellow-500" fill="currentColor" />
+                    <span className="text-base md:text-lg font-bold text-yellow-600 dark:text-yellow-400">
                       {tmdbData.voteAverage.toFixed(1)}
                     </span>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                      ({tmdbData.voteCount})
+                    <span className="text-xs text-gray-500 dark:text-gray-400 hidden sm:inline">
+                      ({tmdbData.voteCount.toLocaleString()})
                     </span>
                   </div>
                 </div>
@@ -158,10 +158,10 @@ function MovieCard({ movie, rank, showRank = true }) {
           <div className="flex gap-2 mt-auto">
             <Link
               to={`/movie/${movie.movieId}`}
-              className="flex-1 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center gap-2 font-medium"
+              className="flex-1 px-3 md:px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center gap-2 font-medium text-sm md:text-base"
             >
-              <Info size={18} />
-              查看详情
+              <Info size={16} className="md:w-[18px] md:h-[18px]" />
+              <span className="whitespace-nowrap">查看详情</span>
             </Link>
           </div>
         </div>
