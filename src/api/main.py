@@ -8,8 +8,13 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from typing import List, Optional
+from enum import Enum
+from datetime import datetime
+from sklearn.metrics.pairwise import cosine_similarity
 import pandas as pd
+import numpy as np
 import os
+import random
 
 from src.models.collaborative_filtering import CollaborativeFilteringRecommender
 
@@ -32,6 +37,13 @@ app.add_middleware(
 # 全局变量
 model = None
 movies_df = None
+feedback_storage = []  # A/B 测试反馈存储
+
+# 推荐策略枚举
+class RecommendationStrategy(str, Enum):
+    COLLABORATIVE = "collaborative"  # 协同过滤
+    POPULAR = "popular"              # 热门推荐
+    RANDOM = "random"                # 随机推荐（对照组）
 
 # 数据模型
 class RecommendationResponse(BaseModel):
@@ -233,12 +245,168 @@ async def get_stats():
     """获取系统统计信息"""
     if model is None:
         raise HTTPException(status_code=503, detail="模型未加载")
-    
+
     return {
         "total_users": len(model.user_ids),
         "total_movies": len(model.movie_ids),
         "model_components": model.n_components,
         "global_mean_rating": float(model.global_mean)
+    }
+
+# A/B 测试相关接口
+@app.get("/recommend/ab-test/{user_id}")
+async def ab_test_recommendation(
+    user_id: int,
+    strategy: RecommendationStrategy = RecommendationStrategy.COLLABORATIVE,
+    top_k: int = 10
+):
+    """
+    A/B测试接口 - 支持不同推荐策略
+
+    参数:
+    - user_id: 用户ID
+    - strategy: 推荐策略 (collaborative/popular/random)
+    - top_k: 推荐数量
+    """
+    if model is None:
+        raise HTTPException(status_code=503, detail="模型未加载")
+
+    # 根据策略生成推荐
+    if strategy == RecommendationStrategy.COLLABORATIVE:
+        results = model.recommend(user_id, top_k=top_k)
+    elif strategy == RecommendationStrategy.POPULAR:
+        results = model._recommend_popular(top_k)
+    else:  # random
+        # 随机推荐
+        random_movies = random.sample(model.movie_ids, min(top_k, len(model.movie_ids)))
+        results = [{'movieId': mid, 'predicted_rating': 3.0} for mid in random_movies]
+
+    # 添加电影信息和策略标签
+    recommendations = []
+    for rec in results:
+        movie_id = rec['movieId']
+        movie_info = movies_df[movies_df['movieId'] == movie_id]
+
+        if not movie_info.empty:
+            movie = movie_info.iloc[0]
+            recommendations.append({
+                "movieId": movie_id,
+                "title": movie['title'],
+                "genres": movie['genres'],
+                "predicted_rating": rec['predicted_rating'],
+                "strategy": strategy
+            })
+
+    return {
+        "strategy": strategy,
+        "recommendations": recommendations
+    }
+
+@app.post("/feedback")
+async def submit_feedback(
+    user_id: int,
+    movie_id: int,
+    liked: bool,
+    strategy: str
+):
+    """记录用户反馈用于 A/B 测试分析"""
+    feedback_storage.append({
+        "user_id": user_id,
+        "movie_id": movie_id,
+        "liked": liked,
+        "strategy": strategy,
+        "timestamp": datetime.now().isoformat()
+    })
+    return {"status": "success", "message": "反馈已记录"}
+
+@app.get("/ab-test/results")
+async def get_ab_test_results():
+    """获取 A/B 测试结果统计"""
+    if not feedback_storage:
+        return {"message": "暂无反馈数据"}
+
+    # 按策略分组统计
+    from collections import defaultdict
+    stats = defaultdict(lambda: {"likes": 0, "total": 0})
+
+    for fb in feedback_storage:
+        strategy = fb['strategy']
+        stats[strategy]['total'] += 1
+        if fb['liked']:
+            stats[strategy]['likes'] += 1
+
+    results = {}
+    for strategy, data in stats.items():
+        results[strategy] = {
+            "total_feedback": data['total'],
+            "likes": data['likes'],
+            "like_rate": data['likes'] / data['total'] if data['total'] > 0 else 0
+        }
+
+    return results
+
+# 推荐解释接口
+@app.get("/recommend/{user_id}/explain")
+async def explain_recommendation(user_id: int, movie_id: int):
+    """
+    解释为什么推荐这部电影
+
+    参数:
+    - user_id: 用户ID
+    - movie_id: 电影ID
+    """
+    if model is None:
+        raise HTTPException(status_code=503, detail="模型未加载")
+
+    if user_id not in model.user_ids:
+        raise HTTPException(status_code=404, detail="用户不存在于训练数据中")
+
+    if movie_id not in model.movie_ids:
+        raise HTTPException(status_code=404, detail="电影不存在于训练数据中")
+
+    # 1. 找到用户喜欢的相似电影
+    user_idx = model.user_ids.index(user_id)
+    user_ratings = model.user_item_matrix.iloc[user_idx]
+    highly_rated = user_ratings[user_ratings >= 4.0].index.tolist()
+
+    # 2. 计算推荐电影与用户喜欢电影的相似度
+    movie_idx = model.movie_ids.index(movie_id)
+    movie_vector = model.item_factors[movie_idx].reshape(1, -1)
+
+    similar_movies = []
+    for rated_movie_id in highly_rated[:10]:  # 取前10部
+        if rated_movie_id == movie_id:
+            continue
+
+        rated_idx = model.movie_ids.index(rated_movie_id)
+        rated_vector = model.item_factors[rated_idx].reshape(1, -1)
+        similarity = float(cosine_similarity(movie_vector, rated_vector)[0][0])
+
+        movie_info = movies_df[movies_df['movieId'] == rated_movie_id]
+        if not movie_info.empty:
+            movie = movie_info.iloc[0]
+            similar_movies.append({
+                'movieId': int(rated_movie_id),
+                'title': movie['title'],
+                'genres': movie['genres'],
+                'similarity': similarity,
+                'your_rating': float(user_ratings[rated_movie_id])
+            })
+
+    # 按相似度排序
+    similar_movies.sort(key=lambda x: x['similarity'], reverse=True)
+
+    # 获取推荐电影信息
+    recommended_movie_info = movies_df[movies_df['movieId'] == movie_id].iloc[0]
+
+    return {
+        "movieId": movie_id,
+        "title": recommended_movie_info['title'],
+        "genres": recommended_movie_info['genres'],
+        "predicted_rating": float(model.predict_rating(user_id, movie_id)),
+        "explanation": "基于你喜欢的以下电影，我们推荐了这部电影",
+        "based_on": similar_movies[:3],
+        "total_similar_movies": len(similar_movies)
     }
 
 # 前端路由处理（必须放在最后）

@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import Recommendations from './pages/Recommendations';
 import MovieDetail from './pages/MovieDetail';
 import Search from './pages/Search';
+import Dashboard from './pages/Dashboard';
 import Input from './components/Input';
 
 function AppContent() {
@@ -37,6 +38,9 @@ function AppContent() {
                 </Link>
                 <Link to="/recommendations" className="hover:text-indigo-200 transition-colors font-medium min-w-[80px] text-center">
                   {t('nav.recommendations')}
+                </Link>
+                <Link to="/dashboard" className="hover:text-indigo-200 transition-colors font-medium min-w-[80px] text-center">
+                  📊 {t('nav.dashboard') || '数据面板'}
                 </Link>
                 <Link to="/search" className="hover:text-indigo-200 transition-colors font-medium min-w-[60px] text-center">
                   {t('nav.search')}
@@ -85,10 +89,11 @@ function AppContent() {
         <main className="flex-1 container mx-auto px-4 py-8">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route 
-              path="/recommendations" 
-              element={<Recommendations userId={currentUser} />} 
+            <Route
+              path="/recommendations"
+              element={<Recommendations userId={currentUser} />}
             />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/movie/:movieId" element={<MovieDetail />} />
             <Route path="/search" element={<Search />} />
           </Routes>
