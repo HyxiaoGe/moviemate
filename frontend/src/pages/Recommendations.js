@@ -52,21 +52,21 @@ function Recommendations({ userId: propUserId }) {
     <div className="space-y-6 animate-fadeIn">
       {/* 页头 */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="flex-1">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap">
+        <div className="flex-1 min-w-0">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">
             {t('recommendations.title')} 🎯
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">
+          <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 mt-2">
             {t('nav.user')} {userId}
           </p>
         </div>
-        <Button onClick={loadRecommendations} variant="secondary" className="w-[100px] flex-shrink-0">
+        <Button onClick={loadRecommendations} variant="secondary" className="w-auto min-w-[100px] flex-shrink-0 whitespace-nowrap">
           🔄 {t('recommendations.refresh')}
         </Button>
       </div>
 
       {/* 推荐列表 */}
-      <div className="grid grid-cols-1 gap-6">
+      <div className="grid grid-cols-1 gap-4 md:gap-6">
         {recommendations.map((movie, index) => (
           <MovieCard key={movie.movieId} movie={movie} rank={index + 1} />
         ))}

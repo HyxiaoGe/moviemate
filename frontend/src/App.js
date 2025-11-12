@@ -26,29 +26,34 @@ function AppContent() {
       <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors">
         {/* 导航栏 */}
         <nav className="bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-700 dark:to-purple-700 text-white shadow-xl sticky top-0 z-50">
-          <div className="container mx-auto px-4 py-4">
-            <div className="flex items-center justify-between flex-wrap gap-4">
-              <Link to="/" className="text-2xl font-bold flex items-center gap-2 hover:scale-105 transition-transform">
+          <div className="container mx-auto px-4 py-3">
+            <div className="flex items-center justify-between gap-4">
+              <Link to="/" className="text-xl md:text-2xl font-bold flex items-center gap-2 hover:scale-105 transition-transform flex-shrink-0">
                 🎬 MovieMate
               </Link>
-              
-              <div className="flex items-center gap-3 md:gap-6 flex-wrap">
-                <Link to="/" className="hover:text-indigo-200 transition-colors font-medium min-w-[60px] text-center">
-                  {t('nav.home')}
+
+              <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
+                {/* 导航链接 - 在小屏幕上隐藏文字，只显示图标 */}
+                <Link to="/" className="hover:text-indigo-200 transition-colors font-medium px-2 py-1 whitespace-nowrap text-sm md:text-base">
+                  <span className="hidden sm:inline">{t('nav.home')}</span>
+                  <span className="sm:hidden">🏠</span>
                 </Link>
-                <Link to="/recommendations" className="hover:text-indigo-200 transition-colors font-medium min-w-[80px] text-center">
-                  {t('nav.recommendations')}
+                <Link to="/recommendations" className="hover:text-indigo-200 transition-colors font-medium px-2 py-1 whitespace-nowrap text-sm md:text-base">
+                  <span className="hidden sm:inline">{t('nav.recommendations')}</span>
+                  <span className="sm:hidden">⭐</span>
                 </Link>
-                <Link to="/dashboard" className="hover:text-indigo-200 transition-colors font-medium min-w-[80px] text-center">
-                  📊 {t('nav.dashboard') || '数据面板'}
+                <Link to="/dashboard" className="hover:text-indigo-200 transition-colors font-medium px-2 py-1 whitespace-nowrap text-sm md:text-base">
+                  <span className="hidden sm:inline">📊 {t('nav.dashboard') || '数据面板'}</span>
+                  <span className="sm:hidden">📊</span>
                 </Link>
-                <Link to="/search" className="hover:text-indigo-200 transition-colors font-medium min-w-[60px] text-center">
-                  {t('nav.search')}
+                <Link to="/search" className="hover:text-indigo-200 transition-colors font-medium px-2 py-1 whitespace-nowrap text-sm md:text-base">
+                  <span className="hidden sm:inline">{t('nav.search')}</span>
+                  <span className="sm:hidden">🔍</span>
                 </Link>
-                
+
                 {/* 用户选择器 */}
-                <div className="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-lg backdrop-blur-sm">
-                  <span className="text-sm">{t('nav.user')}:</span>
+                <div className="flex items-center gap-1 md:gap-2 bg-white/10 px-2 md:px-3 py-1.5 rounded-lg backdrop-blur-sm flex-shrink-0">
+                  <span className="text-xs md:text-sm whitespace-nowrap">{t('nav.user')}:</span>
                   <input
                     type="text"
                     inputMode="numeric"
@@ -58,27 +63,29 @@ function AppContent() {
                       const val = e.target.value.replace(/\D/g, '');
                       if (val) setCurrentUser(parseInt(val));
                     }}
-                    className="w-16 px-2 py-1 rounded text-gray-900 text-sm font-medium text-center focus:ring-2 focus:ring-indigo-300 outline-none"
+                    className="w-12 md:w-16 px-1 md:px-2 py-1 rounded text-gray-900 text-xs md:text-sm font-medium text-center focus:ring-2 focus:ring-indigo-300 outline-none"
                   />
                 </div>
 
                 {/* 主题切换 */}
                 <button
                   onClick={toggleTheme}
-                  className="p-2 hover:bg-white/10 rounded-lg transition-colors w-10 h-10 flex items-center justify-center"
+                  className="p-1.5 md:p-2 hover:bg-white/10 rounded-lg transition-colors w-8 h-8 md:w-10 md:h-10 flex items-center justify-center flex-shrink-0"
                   aria-label="Toggle theme"
+                  title={isDark ? 'Light mode' : 'Dark mode'}
                 >
-                  {isDark ? <Sun size={20} /> : <Moon size={20} />}
+                  {isDark ? <Sun size={18} className="md:w-5 md:h-5" /> : <Moon size={18} className="md:w-5 md:h-5" />}
                 </button>
 
                 {/* 语言切换 */}
                 <button
                   onClick={toggleLanguage}
-                  className="px-3 py-2 hover:bg-white/10 rounded-lg transition-colors flex items-center gap-1 min-w-[60px] justify-center"
+                  className="px-2 md:px-3 py-1.5 md:py-2 hover:bg-white/10 rounded-lg transition-colors flex items-center gap-1 justify-center flex-shrink-0"
                   aria-label="Toggle language"
+                  title="Switch language"
                 >
-                  <Globe size={18} />
-                  <span className="text-sm font-medium w-[20px] text-center">{i18n.language === 'zh' ? 'EN' : '中'}</span>
+                  <Globe size={16} className="md:w-[18px] md:h-[18px]" />
+                  <span className="text-xs md:text-sm font-medium w-5 md:w-[20px] text-center">{i18n.language === 'zh' ? 'EN' : '中'}</span>
                 </button>
               </div>
             </div>
