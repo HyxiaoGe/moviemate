@@ -46,7 +46,7 @@ function Home() {
               />
             </div>
             <Link to={`/recommendations?userId=${userId}`} className="sm:w-auto">
-              <Button className="w-full sm:min-w-[140px] whitespace-nowrap">
+              <Button className="w-full sm:w-[100px] whitespace-nowrap">
                 🎯 {t('home.getRecommendations')}
               </Button>
             </Link>
@@ -109,10 +109,10 @@ function StatCard({ icon, title, value, color }) {
   };
 
   return (
-    <div className={`bg-gradient-to-br ${colorClasses[color]} text-white rounded-xl p-8 text-center shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all`}>
+    <div className={`bg-gradient-to-br ${colorClasses[color]} text-white rounded-xl p-8 text-center shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all min-h-[180px] flex flex-col justify-center`}>
       <div className="text-5xl mb-3">{icon}</div>
       <div className="text-4xl font-bold mb-2">{value.toLocaleString()}</div>
-      <div className="text-sm font-medium text-white/90">{title}</div>
+      <div className="text-sm font-medium text-white/90 whitespace-nowrap">{title}</div>
     </div>
   );
 }
@@ -120,10 +120,10 @@ function StatCard({ icon, title, value, color }) {
 // 功能卡片组件
 function FeatureCard({ icon, title, description }) {
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-md hover:shadow-2xl transition-all transform hover:-translate-y-1 border border-gray-100 dark:border-gray-700">
+    <div className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-md hover:shadow-2xl transition-all transform hover:-translate-y-1 border border-gray-100 dark:border-gray-700 min-h-[220px] flex flex-col">
       <div className="text-5xl mb-4">{icon}</div>
-      <h3 className="text-xl font-bold mb-3 text-gray-800 dark:text-gray-100">{title}</h3>
-      <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{description}</p>
+      <h3 className="text-xl font-bold mb-3 text-gray-800 dark:text-gray-100 whitespace-nowrap">{title}</h3>
+      <p className="text-gray-600 dark:text-gray-300 leading-relaxed flex-1">{description}</p>
     </div>
   );
 }

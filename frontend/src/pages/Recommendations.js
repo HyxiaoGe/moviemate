@@ -39,9 +39,9 @@ function Recommendations({ userId: propUserId }) {
   if (error) {
     return (
       <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6 text-center">
-        <p className="text-red-600 dark:text-red-400">{error}</p>
-        <Button onClick={loadRecommendations} className="mt-4">
-          {t('common.retry')}
+        <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>
+        <Button onClick={loadRecommendations} className="w-[100px]">
+          🔄 {t('common.retry')}
         </Button>
       </div>
     );
@@ -51,15 +51,15 @@ function Recommendations({ userId: propUserId }) {
     <div className="space-y-6 animate-fadeIn">
       {/* 页头 */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+        <div className="flex-1">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap">
             {t('recommendations.title')} 🎯
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-2">
             {t('nav.user')} {userId}
           </p>
         </div>
-        <Button onClick={loadRecommendations} variant="secondary" minWidth>
+        <Button onClick={loadRecommendations} variant="secondary" className="w-[100px] flex-shrink-0">
           🔄 {t('recommendations.refresh')}
         </Button>
       </div>
@@ -114,7 +114,7 @@ function MovieCard({ movie, rank }) {
           {/* 操作按钮 */}
           <div className="flex gap-2">
             <Link to={`/movie/${movie.movieId}`}>
-              <Button size="sm" minWidth>
+              <Button size="sm" className="w-[100px]">
                 📄 {t('recommendations.viewDetails')}
               </Button>
             </Link>

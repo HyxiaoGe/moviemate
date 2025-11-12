@@ -32,13 +32,13 @@ function AppContent() {
               </Link>
               
               <div className="flex items-center gap-3 md:gap-6 flex-wrap">
-                <Link to="/" className="hover:text-indigo-200 transition-colors font-medium">
+                <Link to="/" className="hover:text-indigo-200 transition-colors font-medium min-w-[60px] text-center">
                   {t('nav.home')}
                 </Link>
-                <Link to="/recommendations" className="hover:text-indigo-200 transition-colors font-medium">
+                <Link to="/recommendations" className="hover:text-indigo-200 transition-colors font-medium min-w-[80px] text-center">
                   {t('nav.recommendations')}
                 </Link>
-                <Link to="/search" className="hover:text-indigo-200 transition-colors font-medium">
+                <Link to="/search" className="hover:text-indigo-200 transition-colors font-medium min-w-[60px] text-center">
                   {t('nav.search')}
                 </Link>
                 
@@ -61,7 +61,7 @@ function AppContent() {
                 {/* 主题切换 */}
                 <button
                   onClick={toggleTheme}
-                  className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                  className="p-2 hover:bg-white/10 rounded-lg transition-colors w-10 h-10 flex items-center justify-center"
                   aria-label="Toggle theme"
                 >
                   {isDark ? <Sun size={20} /> : <Moon size={20} />}
@@ -70,11 +70,11 @@ function AppContent() {
                 {/* 语言切换 */}
                 <button
                   onClick={toggleLanguage}
-                  className="p-2 hover:bg-white/10 rounded-lg transition-colors flex items-center gap-1"
+                  className="px-3 py-2 hover:bg-white/10 rounded-lg transition-colors flex items-center gap-1 min-w-[60px] justify-center"
                   aria-label="Toggle language"
                 >
-                  <Globe size={20} />
-                  <span className="text-sm font-medium">{i18n.language === 'zh' ? 'EN' : '中'}</span>
+                  <Globe size={18} />
+                  <span className="text-sm font-medium w-[20px] text-center">{i18n.language === 'zh' ? 'EN' : '中'}</span>
                 </button>
               </div>
             </div>

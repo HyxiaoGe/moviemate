@@ -41,8 +41,7 @@ function Search() {
           <Button
             type="submit"
             disabled={loading}
-            minWidth
-            className="sm:w-auto"
+            className="w-full sm:w-[120px]"
           >
             {loading ? '⏳' : '🔍'} {loading ? t('common.loading') : t('search.searchButton')}
           </Button>
@@ -53,7 +52,7 @@ function Search() {
       {results.length > 0 && (
         <div>
           <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">
-            {t('search.results')}: {results.length}
+            {results.length} {t('search.results')}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {results.map((movie) => (

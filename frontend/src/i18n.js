@@ -7,20 +7,20 @@ const resources = {
       // 导航
       nav: {
         home: '首页',
-        recommendations: '我的推荐',
+        recommendations: '推荐',
         search: '搜索',
         user: '用户'
       },
       // 首页
       home: {
         title: '发现你的下一部最爱电影',
-        subtitle: '基于机器学习的个性化电影推荐系统',
-        inputLabel: '输入你的用户 ID 开始推荐',
-        getRecommendations: '开始推荐',
+        subtitle: '基于机器学习的个性化推荐系统',
+        inputLabel: '输入用户 ID 开始推荐',
+        getRecommendations: '开始',
         stats: {
-          users: '注册用户',
-          movies: '电影数量',
-          rating: '平均评分'
+          users: '用户',
+          movies: '电影',
+          rating: '评分'
         },
         features: {
           personalized: {
@@ -39,10 +39,10 @@ const resources = {
       },
       // 推荐页
       recommendations: {
-        title: '为你推荐',
+        title: '推荐列表',
         loading: '正在加载推荐...',
         error: '加载失败',
-        predictedRating: '预测评分',
+        predictedRating: '评分',
         viewDetails: '详情',
         refresh: '刷新'
       },
@@ -65,12 +65,12 @@ const resources = {
       },
       // 页脚
       footer: {
-        copyright: 'AI 驱动的电影推荐系统',
-        description: '基于协同过滤算法，为您推荐最适合的电影'
+        copyright: 'AI 驱动的推荐系统',
+        description: '基于协同过滤算法'
       },
       // 通用
       common: {
-        loading: '加载中...',
+        loading: '加载中',
         error: '出错了',
         retry: '重试'
       }
@@ -80,19 +80,19 @@ const resources = {
     translation: {
       nav: {
         home: 'Home',
-        recommendations: 'My Recommendations',
+        recommendations: 'Recommend',
         search: 'Search',
         user: 'User'
       },
       home: {
         title: 'Discover Your Next Favorite Movie',
-        subtitle: 'AI-Powered Personalized Movie Recommendation System',
-        inputLabel: 'Enter your User ID to get started',
-        getRecommendations: 'Get Started',
+        subtitle: 'AI-Powered Personalized Recommendations',
+        inputLabel: 'Enter User ID to get started',
+        getRecommendations: 'Start',
         stats: {
           users: 'Users',
           movies: 'Movies',
-          rating: 'Avg Rating'
+          rating: 'Rating'
         },
         features: {
           personalized: {
@@ -110,10 +110,10 @@ const resources = {
         }
       },
       recommendations: {
-        title: 'Recommended for You',
+        title: 'Recommendations',
         loading: 'Loading recommendations...',
         error: 'Failed to load',
-        predictedRating: 'Predicted Rating',
+        predictedRating: 'Rating',
         viewDetails: 'Details',
         refresh: 'Refresh'
       },
@@ -133,12 +133,12 @@ const resources = {
         similarity: 'Similarity'
       },
       footer: {
-        copyright: 'AI-Powered Movie Recommendation System',
-        description: 'Powered by collaborative filtering algorithm'
+        copyright: 'AI-Powered Recommendations',
+        description: 'Collaborative Filtering'
       },
       common: {
-        loading: 'Loading...',
-        error: 'Error occurred',
+        loading: 'Loading',
+        error: 'Error',
         retry: 'Retry'
       }
     }
