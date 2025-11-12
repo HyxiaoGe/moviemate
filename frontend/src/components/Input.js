@@ -19,6 +19,7 @@ export default function Input({
           }
           bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
           placeholder:text-gray-400 dark:placeholder:text-gray-500
+          [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
           ${className}`}
         {...props}
       />

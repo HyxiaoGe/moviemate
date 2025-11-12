@@ -26,21 +26,27 @@ function Home() {
         </p>
         
         {/* 快速开始 */}
-        <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-xl p-6 md:p-8 max-w-md mx-auto shadow-xl">
+        <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-xl p-6 md:p-8 max-w-lg mx-auto shadow-xl">
           <label className="block text-lg font-semibold mb-4 text-gray-700 dark:text-gray-300">
             {t('home.inputLabel')}
           </label>
-          <div className="flex gap-3">
-            <Input
-              type="number"
-              value={userId}
-              onChange={(e) => setUserId(e.target.value)}
-              placeholder="1"
-              min="1"
-              className="flex-1"
-            />
-            <Link to={`/recommendations?userId=${userId}`}>
-              <Button>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex-1">
+              <Input
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                value={userId}
+                onChange={(e) => {
+                  const val = e.target.value.replace(/\D/g, '');
+                  setUserId(val || 1);
+                }}
+                placeholder="1"
+                className="text-center text-lg"
+              />
+            </div>
+            <Link to={`/recommendations?userId=${userId}`} className="sm:w-auto">
+              <Button className="w-full whitespace-nowrap">
                 {t('home.getRecommendations')}
               </Button>
             </Link>

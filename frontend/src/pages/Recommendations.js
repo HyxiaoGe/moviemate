@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { movieApi } from '../services/api';
+import LoadingSpinner from '../components/LoadingSpinner';
+import Button from '../components/Button';
 
 function Recommendations({ userId: propUserId }) {
   const [searchParams] = useSearchParams();
   const userId = propUserId || parseInt(searchParams.get('userId')) || 1;
+  const { t } = useTranslation();
   
   const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,7 +21,7 @@ function Recommendations({ userId: propUserId }) {
       const data = await movieApi.getRecommendations(userId, 10);
       setRecommendations(data);
     } catch (err) {
-      setError('加载推荐失败: ' + err.message);
+      setError(t('recommendations.error') + ': ' + err.message);
     } finally {
       setLoading(false);
     }
@@ -25,48 +29,38 @@ function Recommendations({ userId: propUserId }) {
 
   useEffect(() => {
     loadRecommendations();
-  }, [userId]);
+  }, [loadRecommendations, userId]);
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="text-xl">加载中...</div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   if (error) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-        <p className="text-red-600">{error}</p>
-        <button 
-          onClick={loadRecommendations}
-          className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-        >
-          重试
-        </button>
+      <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6 text-center">
+        <p className="text-red-600 dark:text-red-400">{error}</p>
+        <Button onClick={loadRecommendations} className="mt-4">
+          {t('common.retry')}
+        </Button>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fadeIn">
       {/* 页头 */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">
-            为用户 {userId} 推荐 🎯
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+            {t('recommendations.title')} 🎯
           </h1>
-          <p className="text-gray-600 mt-2">
-            基于你的历史评分，这些电影你可能会喜欢
+          <p className="text-gray-600 dark:text-gray-400 mt-2">
+            {t('nav.user')} {userId}
           </p>
         </div>
-        <button
-          onClick={loadRecommendations}
-          className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
-        >
-          🔄 刷新推荐
-        </button>
+        <Button onClick={loadRecommendations} variant="secondary">
+          🔄 {t('common.retry')}
+        </Button>
       </div>
 
       {/* 推荐列表 */}
@@ -81,22 +75,24 @@ function Recommendations({ userId: propUserId }) {
 
 // 电影卡片组件
 function MovieCard({ movie, rank }) {
+  const { t } = useTranslation();
+  
   return (
-    <div className="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow p-6">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-all p-6 border border-gray-100 dark:border-gray-700">
       <div className="flex items-start gap-4">
         {/* 排名 */}
-        <div className="flex-shrink-0 w-12 h-12 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center font-bold text-xl">
+        <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-500 text-white rounded-full flex items-center justify-center font-bold text-xl shadow-lg">
           {rank}
         </div>
 
         {/* 电影信息 */}
         <div className="flex-1">
-          <h3 className="text-xl font-bold text-gray-900 mb-2">
+          <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">
             {movie.title}
           </h3>
           
-          <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
-            <span className="px-2 py-1 bg-gray-100 rounded">
+          <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-3">
+            <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded">
               {movie.genres}
             </span>
           </div>
@@ -106,23 +102,21 @@ function MovieCard({ movie, rank }) {
             <span className="text-yellow-500 text-lg">
               {'⭐'.repeat(Math.round(movie.predicted_rating))}
             </span>
-            <span className="font-semibold text-lg">
+            <span className="font-semibold text-lg text-gray-900 dark:text-gray-100">
               {movie.predicted_rating.toFixed(2)}
             </span>
-            <span className="text-gray-500 text-sm">预测评分</span>
+            <span className="text-gray-500 dark:text-gray-400 text-sm">
+              {t('recommendations.predictedRating')}
+            </span>
           </div>
 
           {/* 操作按钮 */}
           <div className="flex gap-2">
-            <Link
-              to={`/movie/${movie.movieId}`}
-              className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-            >
-              查看详情
+            <Link to={`/movie/${movie.movieId}`}>
+              <Button size="sm">
+                {t('recommendations.viewDetails')}
+              </Button>
             </Link>
-            <button className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
-              标记已看
-            </button>
           </div>
         </div>
       </div>

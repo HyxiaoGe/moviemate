@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { movieApi } from '../services/api';
+import Input from '../components/Input';
+import Button from '../components/Button';
 
 function Search() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { t } = useTranslation();
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -16,51 +20,51 @@ function Search() {
       const data = await movieApi.searchMovies(query, 20);
       setResults(data);
     } catch (error) {
-      console.error('搜索失败:', error);
+      console.error('Search failed:', error);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fadeIn">
       {/* 搜索框 */}
       <form onSubmit={handleSearch} className="max-w-2xl mx-auto">
-        <div className="flex gap-2">
-          <input
+        <div className="flex flex-col sm:flex-row gap-3">
+          <Input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="搜索电影..."
-            className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            placeholder={t('search.placeholder')}
+            className="flex-1"
           />
-          <button
+          <Button
             type="submit"
             disabled={loading}
-            className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:bg-gray-400"
+            className="sm:w-auto"
           >
-            {loading ? '搜索中...' : '🔍 搜索'}
-          </button>
+            {loading ? t('common.loading') : `🔍 ${t('search.searchButton')}`}
+          </Button>
         </div>
       </form>
 
       {/* 搜索结果 */}
       {results.length > 0 && (
         <div>
-          <h2 className="text-2xl font-bold mb-4">
-            找到 {results.length} 个结果
+          <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">
+            {t('search.results')}: {results.length}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {results.map((movie) => (
               <Link
                 key={movie.movieId}
                 to={`/movie/${movie.movieId}`}
-                className="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow p-4"
+                className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-all p-4 border border-gray-100 dark:border-gray-700 transform hover:-translate-y-1"
               >
-                <h3 className="font-semibold text-lg mb-2 line-clamp-2">
+                <h3 className="font-semibold text-lg mb-2 line-clamp-2 text-gray-900 dark:text-gray-100">
                   {movie.title}
                 </h3>
-                <p className="text-sm text-gray-600">{movie.genres}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{movie.genres}</p>
               </Link>
             ))}
           </div>
@@ -69,8 +73,8 @@ function Search() {
 
       {/* 空状态 */}
       {!loading && results.length === 0 && query && (
-        <div className="text-center py-12 text-gray-500">
-          没有找到相关电影
+        <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+          {t('search.noResults')}
         </div>
       )}
     </div>

@@ -46,11 +46,15 @@ function AppContent() {
                 <div className="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-lg backdrop-blur-sm">
                   <span className="text-sm">{t('nav.user')}:</span>
                   <input
-                    type="number"
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                     value={currentUser}
-                    onChange={(e) => setCurrentUser(parseInt(e.target.value))}
-                    className="w-16 px-2 py-1 rounded text-gray-900 text-sm font-medium focus:ring-2 focus:ring-indigo-300 outline-none"
-                    min="1"
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/\D/g, '');
+                      if (val) setCurrentUser(parseInt(val));
+                    }}
+                    className="w-16 px-2 py-1 rounded text-gray-900 text-sm font-medium text-center focus:ring-2 focus:ring-indigo-300 outline-none"
                   />
                 </div>
 
