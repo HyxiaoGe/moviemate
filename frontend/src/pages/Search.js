@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { movieApi } from '../services/api';
 import Input from '../components/Input';
 import Button from '../components/Button';
+import { MovieGridCard } from '../components/MovieCard';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 function Search() {
   const [query, setQuery] = useState('');
@@ -41,31 +42,36 @@ function Search() {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full sm:w-[120px]"
+            className="w-full sm:w-auto min-w-[120px] whitespace-nowrap flex-shrink-0"
           >
-            {loading ? '⏳' : '🔍'} {loading ? t('common.loading') : t('search.searchButton')}
+            <span className="flex items-center justify-center gap-2">
+              <span>{loading ? '⏳' : '🔍'}</span>
+              <span>{loading ? t('common.loading') : t('search.searchButton')}</span>
+            </span>
           </Button>
         </div>
       </form>
 
+      {/* 加载中状态 */}
+      {loading && (
+        <div className="flex justify-center py-12">
+          <LoadingSpinner />
+        </div>
+      )}
+
       {/* 搜索结果 */}
-      {results.length > 0 && (
+      {!loading && results.length > 0 && (
         <div>
-          <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">
-            {results.length} {t('search.results')}
+          <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-gray-900 dark:text-gray-100">
+            {t('search.foundResults', { count: results.length })} {results.length} {t('search.results')}
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
             {results.map((movie) => (
-              <Link
+              <MovieGridCard
                 key={movie.movieId}
-                to={`/movie/${movie.movieId}`}
-                className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-all p-4 border border-gray-100 dark:border-gray-700 transform hover:-translate-y-1"
-              >
-                <h3 className="font-semibold text-lg mb-2 line-clamp-2 text-gray-900 dark:text-gray-100">
-                  {movie.title}
-                </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">{movie.genres}</p>
-              </Link>
+                movie={movie}
+                showRank={false}
+              />
             ))}
           </div>
         </div>
@@ -73,8 +79,27 @@ function Search() {
 
       {/* 空状态 */}
       {!loading && results.length === 0 && query && (
-        <div className="text-center py-12 text-gray-500 dark:text-gray-400">
-          {t('search.noResults')}
+        <div className="text-center py-12">
+          <div className="text-6xl mb-4">🔍</div>
+          <p className="text-lg text-gray-500 dark:text-gray-400 mb-2">
+            {t('search.noResults')}
+          </p>
+          <p className="text-sm text-gray-400 dark:text-gray-500">
+            试试其他关键词
+          </p>
+        </div>
+      )}
+
+      {/* 初始状态 */}
+      {!loading && results.length === 0 && !query && (
+        <div className="text-center py-12">
+          <div className="text-6xl mb-4">🎬</div>
+          <p className="text-lg text-gray-500 dark:text-gray-400 mb-2">
+            搜索你喜欢的电影
+          </p>
+          <p className="text-sm text-gray-400 dark:text-gray-500">
+            输入电影名称开始搜索
+          </p>
         </div>
       )}
     </div>
