@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { movieApi } from '../services/api';
 import Input from '../components/Input';
@@ -6,11 +6,48 @@ import Button from '../components/Button';
 import { MovieGridCard } from '../components/MovieCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 
+const CACHE_KEY = 'moviemate_search_cache';
+
 function Search() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
+
+  // 页面加载时恢复缓存的搜索结果
+  useEffect(() => {
+    try {
+      const cached = sessionStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const { query: cachedQuery, results: cachedResults, timestamp } = JSON.parse(cached);
+        // 缓存有效期 30 分钟
+        const cacheAge = Date.now() - timestamp;
+        if (cacheAge < 30 * 60 * 1000) {
+          setQuery(cachedQuery);
+          setResults(cachedResults);
+        } else {
+          // 缓存过期，清除
+          sessionStorage.removeItem(CACHE_KEY);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to restore cache:', error);
+      sessionStorage.removeItem(CACHE_KEY);
+    }
+  }, []);
+
+  // 保存搜索结果到缓存
+  const saveToCache = (searchQuery, searchResults) => {
+    try {
+      sessionStorage.setItem(CACHE_KEY, JSON.stringify({
+        query: searchQuery,
+        results: searchResults,
+        timestamp: Date.now()
+      }));
+    } catch (error) {
+      console.error('Failed to save cache:', error);
+    }
+  };
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -20,6 +57,8 @@ function Search() {
     try {
       const data = await movieApi.searchMovies(query, 20);
       setResults(data);
+      // 保存搜索结果到缓存
+      saveToCache(query, data);
     } catch (error) {
       console.error('Search failed:', error);
     } finally {

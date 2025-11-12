@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Moon, Sun, Globe } from 'lucide-react';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
@@ -14,6 +14,7 @@ function AppContent() {
   const [currentUser, setCurrentUser] = useState(1);
   const { t, i18n } = useTranslation();
   const { isDark, toggleTheme } = useTheme();
+  const location = useLocation();
 
   const toggleLanguage = () => {
     const newLang = i18n.language === 'zh' ? 'en' : 'zh';
@@ -21,11 +22,22 @@ function AppContent() {
     localStorage.setItem('language', newLang);
   };
 
+  // 判断是否为当前页面
+  const isActive = (path) => {
+    return location.pathname === path;
+  };
+
+  // 获取导航链接的样式
+  const getNavLinkClass = (path) => {
+    const baseClass = "hover:text-indigo-200 transition-colors font-medium px-2 py-1 whitespace-nowrap text-sm md:text-base rounded";
+    const activeClass = isActive(path) ? "bg-white/20" : "";
+    return `${baseClass} ${activeClass}`;
+  };
+
   return (
-    <Router>
-      <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors">
-        {/* 导航栏 */}
-        <nav className="bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-700 dark:to-purple-700 text-white shadow-xl sticky top-0 z-50">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors">
+      {/* 导航栏 */}
+      <nav className="bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-700 dark:to-purple-700 text-white shadow-xl sticky top-0 z-50">
           <div className="container mx-auto px-4 py-3">
             <div className="flex items-center justify-between gap-4">
               <Link to="/" className="text-xl md:text-2xl font-bold flex items-center gap-2 hover:scale-105 transition-transform flex-shrink-0">
@@ -34,19 +46,19 @@ function AppContent() {
 
               <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
                 {/* 导航链接 - 在小屏幕上隐藏文字，只显示图标 */}
-                <Link to="/" className="hover:text-indigo-200 transition-colors font-medium px-2 py-1 whitespace-nowrap text-sm md:text-base">
+                <Link to="/" className={getNavLinkClass('/')}>
                   <span className="hidden sm:inline">{t('nav.home')}</span>
                   <span className="sm:hidden">🏠</span>
                 </Link>
-                <Link to="/recommendations" className="hover:text-indigo-200 transition-colors font-medium px-2 py-1 whitespace-nowrap text-sm md:text-base">
+                <Link to="/recommendations" className={getNavLinkClass('/recommendations')}>
                   <span className="hidden sm:inline">{t('nav.recommendations')}</span>
                   <span className="sm:hidden">⭐</span>
                 </Link>
-                <Link to="/dashboard" className="hover:text-indigo-200 transition-colors font-medium px-2 py-1 whitespace-nowrap text-sm md:text-base">
-                  <span className="hidden sm:inline">📊 {t('nav.dashboard') || '数据面板'}</span>
+                <Link to="/dashboard" className={getNavLinkClass('/dashboard')}>
+                  <span className="hidden sm:inline">📊 {t('nav.dashboard')}</span>
                   <span className="sm:hidden">📊</span>
                 </Link>
-                <Link to="/search" className="hover:text-indigo-200 transition-colors font-medium px-2 py-1 whitespace-nowrap text-sm md:text-base">
+                <Link to="/search" className={getNavLinkClass('/search')}>
                   <span className="hidden sm:inline">{t('nav.search')}</span>
                   <span className="sm:hidden">🔍</span>
                 </Link>
@@ -115,15 +127,16 @@ function AppContent() {
             </div>
           </div>
         </footer>
-      </div>
-    </Router>
+    </div>
   );
 }
 
 function App() {
   return (
     <ThemeProvider>
-      <AppContent />
+      <Router>
+        <AppContent />
+      </Router>
     </ThemeProvider>
   );
 }

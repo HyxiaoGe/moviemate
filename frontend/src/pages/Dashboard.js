@@ -36,7 +36,7 @@ function Dashboard() {
       const statsData = await movieApi.getStats();
       setStats(statsData);
     } catch (err) {
-      setError('加载统计数据失败: ' + err.message);
+      setError(t('dashboard.error') + ': ' + err.message);
     } finally {
       setLoading(false);
     }
@@ -96,47 +96,47 @@ function Dashboard() {
       <div className="bg-gradient-to-r from-blue-500 to-purple-600 dark:from-blue-700 dark:to-purple-800 text-white rounded-lg p-4 md:p-8 shadow-xl">
         <div className="flex items-center gap-2 md:gap-3 mb-2">
           <Activity size={32} className="md:w-10 md:h-10" />
-          <h1 className="text-2xl md:text-4xl font-bold">推荐系统数据面板</h1>
+          <h1 className="text-2xl md:text-4xl font-bold">{t('dashboard.title')}</h1>
         </div>
-        <p className="text-sm md:text-lg opacity-90">实时监控推荐系统的性能指标和数据分布</p>
+        <p className="text-sm md:text-lg opacity-90">{t('dashboard.subtitle')}</p>
       </div>
 
       {/* 核心指标卡片 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <MetricCard
-          title="总用户数"
+          title={t('dashboard.metrics.totalUsers')}
           value={stats.total_users?.toLocaleString() || '0'}
           icon={Users}
           color="blue"
           trend="+12%"
         />
         <MetricCard
-          title="电影库"
+          title={t('dashboard.metrics.totalMovies')}
           value={stats.total_movies?.toLocaleString() || '0'}
           icon={Film}
           color="purple"
           trend="+5%"
         />
         <MetricCard
-          title="平均评分"
+          title={t('dashboard.metrics.avgRating')}
           value={stats.global_mean_rating?.toFixed(2) || '0'}
           icon={Star}
           color="yellow"
           suffix=" / 5.0"
         />
         <MetricCard
-          title="模型维度"
+          title={t('dashboard.metrics.modelDimensions')}
           value={stats.model_components || '50'}
           icon={Zap}
           color="green"
-          suffix=" 维"
+          suffix={` ${t('dashboard.metrics.dimensions')}`}
         />
       </div>
 
       {/* 图表区域 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
         {/* 评分分布 */}
-        <ChartCard title="用户评分分布" icon={TrendingUp}>
+        <ChartCard title={t('dashboard.charts.ratingDistribution')} icon={TrendingUp}>
           <ResponsiveContainer width="100%" height={250} className="md:h-[300px]">
             <BarChart data={ratingDistribution}>
               <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
@@ -163,7 +163,7 @@ function Dashboard() {
         </ChartCard>
 
         {/* 电影类型分布 */}
-        <ChartCard title="电影类型分布" icon={Film}>
+        <ChartCard title={t('dashboard.charts.genreDistribution')} icon={Film}>
           <ResponsiveContainer width="100%" height={250} className="md:h-[300px]">
             <PieChart>
               <Pie
@@ -186,7 +186,7 @@ function Dashboard() {
         </ChartCard>
 
         {/* 用户活跃度 */}
-        <ChartCard title="用户活跃度分布" icon={Users} className="lg:col-span-2">
+        <ChartCard title={t('dashboard.charts.userActivity')} icon={Users} className="lg:col-span-2">
           <ResponsiveContainer width="100%" height={250} className="md:h-[300px]">
             <BarChart data={userActivityData} layout="vertical">
               <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
@@ -213,7 +213,7 @@ function Dashboard() {
             </BarChart>
           </ResponsiveContainer>
           <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400 mt-4 text-center">
-            横轴：用户数量 | 纵轴：每个用户的评分数量范围
+            {t('dashboard.charts.userActivityHint')}
           </p>
         </ChartCard>
       </div>
@@ -222,27 +222,27 @@ function Dashboard() {
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 md:p-6">
         <div className="flex items-center gap-2 md:gap-3 mb-4 md:mb-6">
           <Target size={24} className="md:w-7 md:h-7 text-indigo-600 dark:text-indigo-400" />
-          <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">模型性能指标</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">{t('dashboard.performance.title')}</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
           <PerformanceMetric
-            title="RMSE"
+            title={t('dashboard.performance.rmse.name')}
             value="0.87"
-            description="均方根误差越小越好"
+            description={t('dashboard.performance.rmse.desc')}
             trend="down"
             trendValue="-3.2%"
           />
           <PerformanceMetric
-            title="Precision@10"
+            title={t('dashboard.performance.precision.name')}
             value="0.82"
-            description="Top-10 推荐精确度"
+            description={t('dashboard.performance.precision.desc')}
             trend="up"
             trendValue="+5.1%"
           />
           <PerformanceMetric
-            title="Coverage"
+            title={t('dashboard.performance.coverage.name')}
             value="76%"
-            description="电影覆盖率"
+            description={t('dashboard.performance.coverage.desc')}
             trend="up"
             trendValue="+2.8%"
           />
@@ -253,28 +253,28 @@ function Dashboard() {
       <div className="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-gray-800 dark:to-gray-700 rounded-lg p-4 md:p-6 shadow-lg">
         <div className="flex items-center gap-2 md:gap-3 mb-4">
           <Zap size={24} className="md:w-7 md:h-7 text-indigo-600 dark:text-indigo-400" />
-          <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">算法架构</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">{t('dashboard.algorithm.title')}</h2>
         </div>
         <div className="space-y-3 md:space-y-4">
           <AlgorithmStep
             number="1"
-            title="数据预处理"
-            description="构建用户-物品评分矩阵，处理缺失值和异常值"
+            title={t('dashboard.algorithm.step1.title')}
+            description={t('dashboard.algorithm.step1.desc')}
           />
           <AlgorithmStep
             number="2"
-            title="矩阵分解 (SVD)"
-            description={`使用 TruncatedSVD 降维到 ${stats.model_components || 50} 个隐含特征，捕捉用户偏好和电影特征`}
+            title={t('dashboard.algorithm.step2.title')}
+            description={t('dashboard.algorithm.step2.desc', { dimensions: stats.model_components || 50 })}
           />
           <AlgorithmStep
             number="3"
-            title="相似度计算"
-            description="使用余弦相似度计算用户/物品之间的相似性"
+            title={t('dashboard.algorithm.step3.title')}
+            description={t('dashboard.algorithm.step3.desc')}
           />
           <AlgorithmStep
             number="4"
-            title="推荐生成"
-            description="基于用户和电影的隐含特征向量预测评分，返回 Top-K 推荐"
+            title={t('dashboard.algorithm.step4.title')}
+            description={t('dashboard.algorithm.step4.desc')}
           />
         </div>
       </div>
@@ -282,12 +282,12 @@ function Dashboard() {
       {/* 数据稀疏性说明 */}
       <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 md:p-6">
         <h3 className="text-base md:text-lg font-semibold text-yellow-900 dark:text-yellow-200 mb-2">
-          💡 数据稀疏性挑战
+          💡 {t('dashboard.sparsity.title')}
         </h3>
-        <p className="text-sm md:text-base text-yellow-800 dark:text-yellow-300">
-          当前数据集的稀疏度约为 <strong>98.3%</strong>，这意味着大部分用户-电影组合没有评分数据。
-          协同过滤算法通过矩阵分解有效地处理了这个问题，从已知的评分中学习隐含特征，预测未知评分。
-        </p>
+        <p
+          className="text-sm md:text-base text-yellow-800 dark:text-yellow-300"
+          dangerouslySetInnerHTML={{ __html: t('dashboard.sparsity.desc') }}
+        />
       </div>
     </div>
   );
