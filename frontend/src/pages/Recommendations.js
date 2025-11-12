@@ -29,7 +29,8 @@ function Recommendations({ userId: propUserId }) {
 
   useEffect(() => {
     loadRecommendations();
-  }, [loadRecommendations, userId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId]);
 
   if (loading) {
     return <LoadingSpinner />;
@@ -58,8 +59,8 @@ function Recommendations({ userId: propUserId }) {
             {t('nav.user')} {userId}
           </p>
         </div>
-        <Button onClick={loadRecommendations} variant="secondary">
-          🔄 {t('common.retry')}
+        <Button onClick={loadRecommendations} variant="secondary" minWidth>
+          🔄 {t('recommendations.refresh')}
         </Button>
       </div>
 
@@ -113,8 +114,8 @@ function MovieCard({ movie, rank }) {
           {/* 操作按钮 */}
           <div className="flex gap-2">
             <Link to={`/movie/${movie.movieId}`}>
-              <Button size="sm">
-                {t('recommendations.viewDetails')}
+              <Button size="sm" minWidth>
+                📄 {t('recommendations.viewDetails')}
               </Button>
             </Link>
           </div>

@@ -4,6 +4,7 @@ export default function Button({
   size = 'md', 
   className = '', 
   fullWidth = false,
+  minWidth = false,
   ...props 
 }) {
   const baseClasses = 'inline-flex items-center justify-center font-semibold rounded-lg transition-all transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none';
@@ -20,7 +21,7 @@ export default function Button({
     lg: 'px-8 py-4 text-lg'
   };
 
-  const widthClass = fullWidth ? 'w-full' : '';
+  const widthClass = fullWidth ? 'w-full' : minWidth ? 'min-w-[120px]' : '';
 
   return (
     <button 

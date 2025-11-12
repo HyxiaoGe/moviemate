@@ -46,8 +46,8 @@ function Home() {
               />
             </div>
             <Link to={`/recommendations?userId=${userId}`} className="sm:w-auto">
-              <Button className="w-full whitespace-nowrap">
-                {t('home.getRecommendations')}
+              <Button className="w-full sm:min-w-[140px] whitespace-nowrap">
+                🎯 {t('home.getRecommendations')}
               </Button>
             </Link>
           </div>

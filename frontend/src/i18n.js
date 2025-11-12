@@ -16,7 +16,7 @@ const resources = {
         title: '发现你的下一部最爱电影',
         subtitle: '基于机器学习的个性化电影推荐系统',
         inputLabel: '输入你的用户 ID 开始推荐',
-        getRecommendations: '获取推荐',
+        getRecommendations: '开始推荐',
         stats: {
           users: '注册用户',
           movies: '电影数量',
@@ -43,7 +43,8 @@ const resources = {
         loading: '正在加载推荐...',
         error: '加载失败',
         predictedRating: '预测评分',
-        viewDetails: '查看详情'
+        viewDetails: '详情',
+        refresh: '刷新'
       },
       // 搜索页
       search: {
@@ -51,7 +52,7 @@ const resources = {
         placeholder: '输入电影名称...',
         searchButton: '搜索',
         noResults: '未找到相关电影',
-        results: '搜索结果'
+        results: '结果'
       },
       // 电影详情
       movieDetail: {
@@ -87,7 +88,7 @@ const resources = {
         title: 'Discover Your Next Favorite Movie',
         subtitle: 'AI-Powered Personalized Movie Recommendation System',
         inputLabel: 'Enter your User ID to get started',
-        getRecommendations: 'Get Recommendations',
+        getRecommendations: 'Get Started',
         stats: {
           users: 'Users',
           movies: 'Movies',
@@ -113,14 +114,15 @@ const resources = {
         loading: 'Loading recommendations...',
         error: 'Failed to load',
         predictedRating: 'Predicted Rating',
-        viewDetails: 'View Details'
+        viewDetails: 'Details',
+        refresh: 'Refresh'
       },
       search: {
         title: 'Search Movies',
         placeholder: 'Enter movie title...',
         searchButton: 'Search',
         noResults: 'No movies found',
-        results: 'Search Results'
+        results: 'Results'
       },
       movieDetail: {
         loading: 'Loading...',

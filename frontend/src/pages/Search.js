@@ -41,9 +41,10 @@ function Search() {
           <Button
             type="submit"
             disabled={loading}
+            minWidth
             className="sm:w-auto"
           >
-            {loading ? t('common.loading') : `🔍 ${t('search.searchButton')}`}
+            {loading ? '⏳' : '🔍'} {loading ? t('common.loading') : t('search.searchButton')}
           </Button>
         </div>
       </form>
