@@ -6,7 +6,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import Button from '../components/Button';
 import MovieCard from '../components/MovieCard';
 
-function Recommendations({ userId: propUserId }) {
+function Recommendations({ userId: propUserId, onUserIdChange }) {
   const [searchParams] = useSearchParams();
   const userId = propUserId || parseInt(searchParams.get('userId')) || 1;
   const { t } = useTranslation();
@@ -29,6 +29,10 @@ function Recommendations({ userId: propUserId }) {
   };
 
   useEffect(() => {
+    // 当 userId 变化时，通知父组件更新导航栏的用户ID
+    if (onUserIdChange && userId !== propUserId) {
+      onUserIdChange(userId);
+    }
     loadRecommendations();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);

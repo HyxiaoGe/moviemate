@@ -5,14 +5,19 @@ import { movieApi } from '../services/api';
 import Input from '../components/Input';
 import Button from '../components/Button';
 
-function Home() {
+function Home({ currentUserId = 1, onUserIdChange }) {
   const [stats, setStats] = useState(null);
-  const [userId, setUserId] = useState(1);
+  const [userId, setUserId] = useState(currentUserId);
   const { t } = useTranslation();
 
   useEffect(() => {
     movieApi.getStats().then(setStats).catch(console.error);
   }, []);
+
+  // 当导航栏的用户ID变化时，同步到本地状态
+  useEffect(() => {
+    setUserId(currentUserId);
+  }, [currentUserId]);
 
   return (
     <div className="space-y-12 animate-fadeIn">
@@ -39,7 +44,12 @@ function Home() {
                 value={userId}
                 onChange={(e) => {
                   const val = e.target.value.replace(/\D/g, '');
-                  setUserId(val || 1);
+                  const newUserId = val ? parseInt(val) : 1;
+                  setUserId(newUserId);
+                  // 同步更新导航栏的用户ID
+                  if (onUserIdChange) {
+                    onUserIdChange(newUserId);
+                  }
                 }}
                 placeholder="1"
                 className="text-center text-lg"

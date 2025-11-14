@@ -8,13 +8,17 @@ import Recommendations from './pages/Recommendations';
 import MovieDetail from './pages/MovieDetail';
 import Search from './pages/Search';
 import Dashboard from './pages/Dashboard';
-import Input from './components/Input';
 
 function AppContent() {
   const [currentUser, setCurrentUser] = useState(1);
   const { t, i18n } = useTranslation();
   const { isDark, toggleTheme } = useTheme();
   const location = useLocation();
+
+  // 处理用户ID变化的回调函数
+  const handleUserIdChange = (newUserId) => {
+    setCurrentUser(newUserId);
+  };
 
   const toggleLanguage = () => {
     const newLang = i18n.language === 'zh' ? 'en' : 'zh';
@@ -55,7 +59,7 @@ function AppContent() {
                   <span className="sm:hidden">⭐</span>
                 </Link>
                 <Link to="/dashboard" className={getNavLinkClass('/dashboard')}>
-                  <span className="hidden sm:inline">📊 {t('nav.dashboard')}</span>
+                  <span className="hidden sm:inline">{t('nav.dashboard')}</span>
                   <span className="sm:hidden">📊</span>
                 </Link>
                 <Link to="/search" className={getNavLinkClass('/search')}>
@@ -63,20 +67,10 @@ function AppContent() {
                   <span className="sm:hidden">🔍</span>
                 </Link>
 
-                {/* 用户选择器 */}
-                <div className="flex items-center gap-1 md:gap-2 bg-white/10 px-2 md:px-3 py-1.5 rounded-lg backdrop-blur-sm flex-shrink-0">
-                  <span className="text-xs md:text-sm whitespace-nowrap">{t('nav.user')}:</span>
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    value={currentUser}
-                    onChange={(e) => {
-                      const val = e.target.value.replace(/\D/g, '');
-                      if (val) setCurrentUser(parseInt(val));
-                    }}
-                    className="w-12 md:w-16 px-1 md:px-2 py-1 rounded text-gray-900 text-xs md:text-sm font-medium text-center focus:ring-2 focus:ring-indigo-300 outline-none"
-                  />
+                {/* 用户ID显示 */}
+                <div className="flex items-center gap-1.5 md:gap-2 bg-white/20 px-3 md:px-4 py-1.5 md:py-2 rounded-full backdrop-blur-sm flex-shrink-0 shadow-lg border border-white/30">
+                  <span className="text-xs md:text-sm whitespace-nowrap opacity-90">👤</span>
+                  <span className="text-xs md:text-sm font-semibold tracking-wide">{currentUser}</span>
                 </div>
 
                 {/* 主题切换 */}
@@ -107,14 +101,14 @@ function AppContent() {
         {/* 主内容 */}
         <main className="flex-1 container mx-auto px-4 py-8">
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Home currentUserId={currentUser} onUserIdChange={handleUserIdChange} />} />
             <Route
               path="/recommendations"
-              element={<Recommendations userId={currentUser} />}
+              element={<Recommendations userId={currentUser} onUserIdChange={handleUserIdChange} />}
             />
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard" element={<Dashboard onUserIdChange={handleUserIdChange} />} />
             <Route path="/movie/:movieId" element={<MovieDetail />} />
-            <Route path="/search" element={<Search />} />
+            <Route path="/search" element={<Search onUserIdChange={handleUserIdChange} />} />
           </Routes>
         </main>
 
